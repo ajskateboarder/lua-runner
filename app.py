@@ -3,6 +3,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 from lupa import LuaRuntime
+from lupa._lupa import LuaError
 
 app = Flask(__name__)
 limiter = Limiter(app, key_func=get_remote_address)
@@ -19,8 +20,11 @@ def home():
 @app.post("/code")
 @limiter.limit("3/second", override_defaults=False)
 def code():
-    finished, response = sandbox.run(request.json["code"])
-    return {"code": response}
+    try:
+        finished, response = sandbox.run(request.json["code"])
+        return {"code": response}
+    except LuaError:
+        return {"code": "Script canceled because it uses too much resources."}
 
 
 app.run(debug=True)

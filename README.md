@@ -4,7 +4,7 @@ Small Flask app which can execute Lua and send a response back. Not supposed to 
 
 ## Highlights
 
-- Sandboxed to prevent malicious code (operation limit of 100000)
+- Sandboxed to prevent malicious code (operation limit of 100,000)
 - Rate-limited by Flask-Limiter
 - Simple to understand UI (albeit pretty minimal)
 
@@ -24,4 +24,21 @@ Start the app:
 python3 app.py
 ```
 
-Your app should be running on [localhost:5000](http://localhost:5000). That's it, enjoy :)
+Your app should be running on [localhost:5000](http://localhost:5000).
+
+```lua
+return string.reverse('olleH') .. " world"
+>> Hello world
+```
+
+Running something that exceeds the 100,000 operations:
+
+```lua
+while true do 
+    print("hey") 
+end
+
+>> Script canceled because it uses too much resources.
+```
+
+Again this is a side project so don't expect much support here :P
