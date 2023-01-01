@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: system-ui, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lua runner</h1>
+    <p>Yet another app to run Lua code from the server and show the result to the user!<br>Make sure your code ends with return to get a value printed.</p>
+    <textarea name="Lua code" id="code" cols="30" rows="10" placeholder="return 'Hello world'"></textarea>
+    <br><button onclick="submit()">Submit</button>
+    <p id="result">Your response will show here!</p>
+    <script>
+        async function submit() {
+            try {
+                var s = +new Date;
+                var code = document.querySelector("#code").value
+                var res = await fetch("/code", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({"code": code})})
+                var json = await res.json()
+                var e = +new Date;
+                document.querySelector("#result").innerHTML = `${json.code} (${e - s} ms)`
+            } catch { document.querySelector("#result").innerHTML = "Failed to run. Maybe slow down a little?" }
+        }
+    </script>
+</body>
+</html>
